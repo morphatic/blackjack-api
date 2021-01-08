@@ -1,8 +1,8 @@
 {
   "name": "blackjack-api",
   "description": "API for a react-based implementation of the classic game of 21",
-  "version": "0.0.0",
-  "homepage": "",
+  "version": "0.1.0",
+  "homepage": "https://github.com/morphatic/blackjack-api",
   "private": true,
   "main": "src",
   "keywords": [
@@ -45,7 +45,10 @@
     "@feathersjs/transport-commons": "^4.5.11",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "feathers-mongoose": "^8.3.1",
     "helmet": "^4.3.1",
+    "mongodb-core": "^3.2.7",
+    "mongoose": "^5.11.10",
     "serve-favicon": "^2.5.0",
     "winston": "^3.3.3"
   },
