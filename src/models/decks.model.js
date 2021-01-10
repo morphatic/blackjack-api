@@ -1,42 +1,30 @@
-// cards-model.js - A mongoose model
+// decks-model.js - A mongoose model
 // 
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 module.exports = function (app) {
-  const modelName = 'cards'
+  const modelName = 'decks'
   const mongooseClient = app.get('mongooseClient')
   const { Schema } = mongooseClient
   const schema = new Schema({
-    suit: {
-      type: String,
-      enum: ['c', 'd', 'h', 's'],
-      required: true,
+    cards: [{
+      type: Schema.Types.ObjectId,
+      ref: 'cards',
+    }],
+    discards: [{
+      type: Schema.Types.ObjectId,
+      ref: 'cards',
+    }],
+    markerPosition: {
+      type: Number,
+      default: 0,
     },
-    rank: {
-      type: String,
-      enum: [
-        'a',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-        '8',
-        '9',
-        '10',
-        'j',
-        'q',
-        'k',
-      ],
-      required: true,
-    },
-    isFaceUp: {
-      type: Boolean,
-      default: false,
+    packs: {
+      type: Number,
+      default: 6,
     },
   }, {
-    timestamps: false,
+    timestamps: true,
   })
 
   // This is necessary to avoid model compilation errors in watch mode
