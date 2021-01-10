@@ -16,6 +16,7 @@ module.exports = function (app) {
       type: String,
       required: true,
     },
+    // TODO: Remove gravatar field
     gravatar: {
       type: String,
       required: true,
