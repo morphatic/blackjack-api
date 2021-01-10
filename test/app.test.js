@@ -1,25 +1,21 @@
 const axios = require('axios')
-const url = require('url')
 const app = require('../src/app')
 
+const host = app.get('host') || 'localhost'
 const port = app.get('port') || 8998
-const getUrl = pathname => url.format({
-  hostname: app.get('host') || 'localhost',
-  protocol: 'http',
-  port,
-  pathname,
-})
+const getUrl = pathname => `http://${host}:${port}/${pathname || ''}`
 
 describe('Feathers application tests (with jest)', () => {
   let server
 
   beforeAll(done => {
+    app.set('mongodb', 'http://127.0.0.1:27017/app')
     server = app.listen(port)
     server.once('listening', () => done())
   })
 
-  afterAll(done => {
-    server.close(done)
+  afterAll(async () => {
+    await server.close()
   })
 
   it('starts and shows the index page', async () => {
@@ -32,7 +28,6 @@ describe('Feathers application tests (with jest)', () => {
 
   describe('404', () => {
     it('shows a 404 HTML page', async () => {
-      expect.assertions(2)
       try {
         await axios.get(getUrl('path/to/nowhere'), {
           headers: {
@@ -48,8 +43,6 @@ describe('Feathers application tests (with jest)', () => {
     })
 
     it('shows a 404 JSON error without stack trace', async () => {
-      expect.assertions(4)
-      
       try {
         await axios.get(getUrl('path/to/nowhere'))
       } catch (error) {

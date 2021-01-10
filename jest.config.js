@@ -4,5 +4,5 @@ module.exports = {
     '/config/',
     '/node_modules/',
   ],
-  testTimeout: 30000,
+  testTimeout: 60000,
 }

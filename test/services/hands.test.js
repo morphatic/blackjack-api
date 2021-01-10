@@ -1,12 +1,12 @@
 const app = require('../../src/app')
 
-describe('\'users\' service', () => {
+describe('\'hands\' service', () => {
   beforeAll(() => {
-    app.set('mongodb', 'http://127.0.0.1:27017/users')
+    app.set('mongodb', 'http://127.0.0.1:27017/hands')
   })
 
   it('registered the service', () => {
-    const service = app.service('users')
+    const service = app.service('hands')
     expect(service).toBeTruthy()
   })
 })
