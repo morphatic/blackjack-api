@@ -25,7 +25,7 @@
   },
   "scripts": {
     "dev": "nodemon src/",
-    "jest": "jest  --forceExit",
+    "jest": "jest --detectOpenHandles --forceExit",
     "lint": "eslint src/. test/. --config .eslintrc.js --fix",
     "start": "node src/",
     "test": "npm run lint && npm run jest"

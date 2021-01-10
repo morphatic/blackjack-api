@@ -1,7 +1,7 @@
-// Initializes the `cards` service on path `/cards`
-const { Cards } = require('./cards.class')
-const createModel = require('../../models/cards.model')
-const hooks = require('./cards.hooks')
+// Initializes the `decks` service on path `/decks`
+const { Decks } = require('./decks.class')
+const createModel = require('../../models/decks.model')
+const hooks = require('./decks.hooks')
 
 module.exports = function (app) {
   const options = {
@@ -11,10 +11,10 @@ module.exports = function (app) {
   }
 
   // Initialize our service with any options it requires
-  app.use('/cards', new Cards(options, app))
+  app.use('/decks', new Decks(options, app))
 
   // Get our initialized service so that we can register hooks
-  const service = app.service('cards')
+  const service = app.service('decks')
 
   service.hooks(hooks)
 }
