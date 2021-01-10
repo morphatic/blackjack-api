@@ -12,10 +12,7 @@ module.exports = function (app) {
       required: true,
       unique: true,
     },
-    name: {
-      type: String,
-      required: true,
-    },
+    name: String,
     chips: { // dollar value of chips held
       type: Number,
       default: 100,
