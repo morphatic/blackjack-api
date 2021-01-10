@@ -5,6 +5,7 @@ describe('\'decks\' service', () => {
   let deck
 
   beforeAll(async () => {
+    app.set('mongodb', 'http://127.0.0.1:27017/decks')
     service = app.service('decks')
     deck = await app.service('decks').create({})
   })

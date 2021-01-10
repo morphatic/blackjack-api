@@ -16,11 +16,6 @@ module.exports = function (app) {
       type: String,
       required: true,
     },
-    // TODO: Remove gravatar field
-    gravatar: {
-      type: String,
-      required: true,
-    },
     chips: { // dollar value of chips held
       type: Number,
       default: 100,
@@ -105,12 +100,12 @@ module.exports = function (app) {
         type: Boolean,
         default: false,
       },
-      // TODO: Figure out format for history
-      // Not sure how to capture history. Initial thought is just to
-      // store an array of raw JSON strings that have some sort of
-      // summary of all of the hands played.
-      history: [String],
     },
+    // TODO: Figure out format for history
+    // Not sure how to capture history. Initial thought is just to
+    // store an array of raw JSON strings that have some sort of
+    // summary of all of the hands played.
+    history: [String],
   }, {
     timestamps: true,
   })
