@@ -1,31 +1,16 @@
+const assert = require('assert')
 const app = require('../../src/app')
 
 describe('\'decks\' service', () => {
-  let service
-  let deck
-
-  beforeAll(async () => {
-    app.set('mongodb', 'http://127.0.0.1:27017/decks')
-    service = app.service('decks')
-    deck = await app.service('decks').create({})
-  })
-
+  
   it('registered the service', () => {
-    expect(service).toBeTruthy()
+    const service = app.service('decks')
+
+    assert.ok(service, 'Registered the service')
   })
 
-  it('should create a shuffled deck of 312 cards', () => {
-    // by default the "deck" should have 6 packs of cards in it
-    expect(deck.cards.length).toBe(312)
-  })
-
-  afterAll(async () => {
-    // remove deck and all cards from the db
-    try {
-      await service.remove(null)
-      await app.service('cards').remove(null)
-    } catch (err) {
-      console.log(err.message)
-    }
-  })
+  it('should create a deck with 312 shuffled cards', async () => {
+    const deck = await app.service('decks').create({})
+    assert.strictEqual(deck.cards.length, 312)
+  }).timeout(5000)
 })

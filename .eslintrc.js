@@ -2,7 +2,7 @@ module.exports = {
   env: {
     es6: true,
     node: true,
-    jest: true,
+    mocha: true,
   },
   parserOptions: {
     ecmaVersion: 2018,
