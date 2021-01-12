@@ -2,8 +2,7 @@ const { Service } = require('feathers-mongoose')
 
 exports.Decks = class Decks extends Service {
 
-  constructor (options, app) {
-    super(options, app)
+  setup (app) {
     this.app = app
   }
 
@@ -44,30 +43,13 @@ exports.Decks = class Decks extends Service {
       packs: data.packs || 6,
     }
 
-    // create an empty array of cards
-    let cards = []
+    // retrieve the required number of cards from the cards service
+    // the cards were saved consecutively, so this will get the first n packs
+    const cards = await this.app.service('cards').find({ query: { $limit: deck.packs * 52 } })
 
-    // depending on the number of packs (each pack is 52 cards)
-    for (let i = 0; i < deck.packs; i += 1) {
-      // for each suit
-      for (const suit of ['c', 'd', 'h', 's']) {
-        // for each rank
-        for (const rank of ['a', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'j', 'q', 'k']) {
-          // create a new card object and add it to the array
-          cards.push({ suit, rank })
-        }
-      }
-    }
-
-    // shuffle the deck
-    cards = this.shuffle(cards)
+    // shuffle the cards and add them to the deck
+    deck.cards = this.shuffle(cards)
     
-    // create card objects in the database
-    cards = await this.app.service('cards').create(cards)
-
-    // update the empty deck with the created cards
-    deck.cards = cards
-
     // pass the updated deck to the parent class
     return super.create(deck, params)
   }
