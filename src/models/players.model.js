@@ -21,7 +21,7 @@ module.exports = function (app) {
       rules: {
         seats: {
           type: Number,
-          default: 5,
+          default: 1,
         },
         decks: {
           type: Number,
@@ -86,6 +86,10 @@ module.exports = function (app) {
         secondsAllowedPerAction: {
           type: Number,
           default: 30,
+        },
+        canOnlyHitOnceAfterAceSplit: {
+          type: Boolean,
+          default: true,
         },
       },
       deckColor: {

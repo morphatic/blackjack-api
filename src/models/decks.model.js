@@ -15,6 +15,10 @@ module.exports = function (app) {
       type: Schema.Types.ObjectId,
       ref: 'cards',
     }],
+    inPlay: [{
+      type: Schema.Types.ObjectId,
+      ref: 'cards',
+    }],
     markerPosition: {
       type: Number,
       default: 0,

@@ -6,7 +6,7 @@ const hooks = require('./cards.hooks')
 module.exports = function (app) {
   const options = {
     Model: createModel(app),
-    paginate: app.get('paginate'),
+    paginate: { default: 10, max: 416 },
     multi: true,
   }
 

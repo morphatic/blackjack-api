@@ -7,6 +7,10 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient')
   const { Schema } = mongooseClient
   const schema = new Schema({
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'players',
+    },
     deck: {
       type: Schema.Types.ObjectId,
       ref: 'decks',
@@ -14,14 +18,18 @@ module.exports = function (app) {
     games: [{
       type: Schema.Types.ObjectId,
       ref: 'games',
+      autopopulate: true,
     }],
-    seat: {
+    seats: {
       type: Number,
-      default: 5,
+      default: 1,
     },
   }, {
     timestamps: true,
   })
+
+  // always populate games
+  schema.plugin(require('mongoose-autopopulate'))
 
   // This is necessary to avoid model compilation errors in watch mode
   // see https://mongoosejs.com/docs/api/connection.html#connection_Connection-deleteModel

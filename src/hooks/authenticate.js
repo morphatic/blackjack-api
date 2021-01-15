@@ -40,6 +40,31 @@ module.exports = (options = {}) => {
     // add the player to the context
     context.player = player
 
+    // make sure the player has a table
+    try {
+      let table
+      table = await app.service('tables').find({ query: { owner: player._id } })
+      // if no tables returned
+      if (table.data.length === 0) {
+        // make one
+        table = await app.service('tables').create({ owner: player._id })
+      } else {
+        table = table.data[0]
+      }
+      // then make sure the table has a deck
+      if (!table.deck) {
+        const packs = player.preferences.rules.decks
+        const cards = packs * 52
+        // selects a marker position between 20 and 10% + 20 cards from the bottom of the deck
+        const markerPosition = cards - (Math.floor(Math.random() * (Math.floor(cards/10))) + 20)
+        const deck = await app.service('decks').create({ packs, markerPosition })
+        await app.service('tables').patch(table._id, { deck: deck._id })
+      }
+    } catch (error) {
+      // silence is golden
+      throw new GeneralError('What the hell is going on?', error)
+    }
+
     return context
   }
 }

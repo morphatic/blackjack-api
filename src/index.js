@@ -22,7 +22,6 @@ if (!['production', 'staging', 'test'].includes(process.env.NODE_ENV)) {
   // startup the server
   server.listen(port)
   // re-run setup; see: https://crow.docs.feathersjs.com/api/express.html#https
-  logger.info(app.get('mongodb'))
   app.setup(server)
 } else {
   // production/staging mode

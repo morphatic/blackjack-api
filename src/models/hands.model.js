@@ -31,9 +31,17 @@ module.exports = function (app) {
     },
     result: {
       type: String,
-      enum: ['p', 'w', 'l', 'b', 's'],
+      enum: ['p', 'w', 'l', 'b', 's', 'i'], // push, win, loss, blackjack, surrender, insurance
     },
     isInsured: {
+      type: Boolean,
+      default: false,
+    },
+    isSplit: { // was this hand the result of a split?
+      type: Boolean,
+      default: false,
+    },
+    splitFromAceOrTen: { // a "blackjack" resulting from splitting aces or 10-cards only counts as 21 towards the win/payout
       type: Boolean,
       default: false,
     },

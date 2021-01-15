@@ -10,6 +10,7 @@ module.exports = function (app) {
     hands: [{
       type: Schema.Types.ObjectId,
       ref: 'hands',
+      autopopulate: true,
     }],
     dealerCards: [{
       type: Schema.Types.ObjectId,
@@ -23,9 +24,86 @@ module.exports = function (app) {
       type: Number,
       default: 0,
     },
+    rules: {
+      seats: {
+        type: Number,
+        default: 1,
+      },
+      decks: {
+        type: Number,
+        default: 6,
+      },
+      minBet: {
+        type: Number,
+        default: 5,
+      },
+      maxBet: {
+        type: Number,
+        default: 2000,
+      },
+      betIncrement: {
+        type: Number,
+        default: 5,
+      },
+      allowEarlySurrender: {
+        type: Boolean,
+        default: false,
+      },
+      allowLateSurrender: {
+        type: Boolean,
+        default: false,
+      },
+      allowableDoubleDownTotals: {
+        type: [Number],
+        default: [9, 10, 11],
+      },
+      numberOfSplitsAllowed: {
+        type: Number,
+        default: 3,
+      },
+      allowSplitsForAll10Cards: {
+        type: Boolean,
+        default: true,
+      },
+      allowDoublingAfterSplit: {
+        type: Boolean,
+        default: true,
+      },
+      payoutForBlackjack: {
+        type: Number,
+        default: 1.5, // 3:2 == 1.5; 6:5 == 1.2
+      },
+      dealPlayersCardsFaceDown: {
+        type: Boolean,
+        default: false,
+      },
+      dealerStandsOnSoft17: {
+        type: Boolean,
+        default: true,
+      },
+      fiveCardCharlieWins: {
+        type: Boolean,
+        default: false,
+      },
+      insuranceAvailable: {
+        type: Boolean,
+        default: true,
+      },
+      secondsAllowedPerAction: {
+        type: Number,
+        default: 30,
+      },
+      canOnlyHitOnceAfterAceSplit: {
+        type: Boolean,
+        default: true,
+      },
+    },
   }, {
     timestamps: true,
   })
+
+  // always populate games
+  schema.plugin(require('mongoose-autopopulate'))
 
   // This is necessary to avoid model compilation errors in watch mode
   // see https://mongoosejs.com/docs/api/connection.html#connection_Connection-deleteModel

@@ -6,6 +6,7 @@ module.exports = function (app) {
     app.get('mongodb'),
     {
       useCreateIndex: true,
+      useFindAndModify: false,
       useNewUrlParser: true,
       useUnifiedTopology: true,
     },
