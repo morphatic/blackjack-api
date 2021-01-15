@@ -28,6 +28,7 @@
     "lint": "eslint src/. test/. --config .eslintrc.js --fix",
     "mocha": "mocha test/ --recursive --exit",
     "start": "node src/",
+    "start:prod": "cross-env NODE_ENV=production node src/",
     "test": "npm run lint && npm run mocha"
   },
   "standard": {
@@ -57,6 +58,7 @@
   },
   "devDependencies": {
     "axios": "^0.21.1",
+    "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^7.17.0",
     "mocha": "^8.2.1",
