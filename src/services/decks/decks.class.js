@@ -115,7 +115,10 @@ exports.Decks = class Decks extends Service {
       // get the deck, game, and hands
       let deck = await super.get(id)
       const game = await this.app.service('games').get(gameId, { query: { $populate: 'hands' } } )
-      
+
+      // first, go back and provide a reciprocal association from the hands to the game
+      // const updatedHands = await Promise.all(game.hands.map(async h => await this.app.service('hands').patch(h, { game: gameId })))
+      // console.log('updated hands', updatedHands)
       // get the deck size
       const size = deck.packs * 52
       
@@ -146,8 +149,8 @@ exports.Decks = class Decks extends Service {
       const hands = JSON.parse(JSON.stringify(game.hands)) 
       
       // update the deck and hands in the database
-      game.hands = (await Promise.all(game.hands.map(async h => await this.app.service('hands').update(h._id, h)))).map(h => h._id)
-      await this.app.service('games').update(gameId, game)
+      game.hands = (await Promise.all(game.hands.map(async h => await this.app.service('hands').patch(h._id, { ...h, game: gameId })))).map(h => h._id)
+      await this.app.service('games').patch(gameId, game)
       
       // populate the cards in the hands
       const getCard = async c => await this.app.service('cards').get(c)
@@ -192,17 +195,13 @@ exports.Decks = class Decks extends Service {
 
       // add it to the appropriate hand and update the hand
       const hand = (await this.app.service('hands').find({ query: { player: recipient, game: gameId  } })).data[0]
-      // console.log('hand', hand)
-      const handIndex = game.hands.findIndex(h => h === hand._id)
-      // console.log('handIndex', handIndex)
+      const handIndex = game.hands.findIndex(h => String(h._id) === String(hand._id))
       hand.cards = [...hand.cards, inPlay]
-      // console.log('hand.cards', hand.cards)
       await this.app.service('hands').patch(hand._id, hand)
-      // console.log('hand.cards', hand.cards)
-      
+
       // populate the cards in the hand from the database
-      game.hands[handIndex].cards = (await this.app.service('cards').find({ query: { $in: hand.cards }})).data
-      
+      game.hands[handIndex].cards = (await this.app.service('cards').find({ query: { _id: { $in: hand.cards } }})).data
+
       // return the deck and the game with the populated hand
       return { deck, game }
     } catch (error) {
