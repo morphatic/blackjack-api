@@ -116,9 +116,6 @@ exports.Decks = class Decks extends Service {
       let deck = await super.get(id)
       const game = await this.app.service('games').get(gameId, { query: { $populate: 'hands' } } )
 
-      // first, go back and provide a reciprocal association from the hands to the game
-      // const updatedHands = await Promise.all(game.hands.map(async h => await this.app.service('hands').patch(h, { game: gameId })))
-      // console.log('updated hands', updatedHands)
       // get the deck size
       const size = deck.packs * 52
       
@@ -199,8 +196,10 @@ exports.Decks = class Decks extends Service {
       hand.cards = [...hand.cards, inPlay]
       await this.app.service('hands').patch(hand._id, hand)
 
-      // populate the cards in the hand from the database
-      game.hands[handIndex].cards = (await this.app.service('cards').find({ query: { _id: { $in: hand.cards } }})).data
+      // populate the cards in the hand from the database THIS CAN CHANGE CARD ORDER!!!!
+      // game.hands[handIndex].cards = (await this.app.service('cards').find({ query: { _id: { $in: hand.cards } }})).data
+
+      game.hands[handIndex].cards = await Promise.all(hand.cards.map(async c => await this.app.service('cards').get(c)))
 
       // return the deck and the game with the populated hand
       return { deck, game }
@@ -260,18 +259,19 @@ exports.Decks = class Decks extends Service {
       await super.update(id, deck)
 
       // fully populate the cards in the dealer's hand and calculate the dealer's total
-      const dealerHand = (await this.app.service('cards').find({ query: { $in: game.dealerCards } })).data
+      const dealerHand = (await this.app.service('cards').find({ query: { _id: { $in: game.dealerCards } } })).data
       const dealerTotal = this.total(dealerHand)
       const dealerBlackjack = this.isBlackjack(dealerHand, dealerTotal)
-
+      console.log(dealerTotal, dealerBlackjack, dealerHand)
       // settle each hand
       for (const handId of game.hands) {
         // get the hand from the database
         const hand = await this.app.service('hands').get(handId, { query: { $populate: 'cards' } } )
+        console.log(hand)
         // initialize payout multiplier
         let multiplier = 0
         // populate all the cards
-        const cards = hand.cards
+        const cards = await hand.cards.map(async c => await this.app.service('cards').get(c))
         // determine the result: push, win, lose, blackjack, surrender, insurance
         const total = this.total(cards)
         const hasFive = total <= 21 && game.rules.fiveCardCharlieWins
