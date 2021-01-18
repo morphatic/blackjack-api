@@ -8,6 +8,27 @@ exports.Decks = class Decks extends Service {
   }
 
   /**
+   * Shuffle a deck of cards
+   * 
+   * A JavaScript implementation of the Durstenfeld shuffle,
+   * an optimized version of Fisher-Yates:
+   * see: https://stackoverflow.com/a/12646864/296725
+   * 
+   * @param {array} cards A deck of cards
+   */
+  shuffle (cards) {
+    // clone the array of cards (i.e. don't mutate the original array)
+    const shuffled = JSON.parse(JSON.stringify(cards))
+    // shuffle it
+    for (let i = shuffled.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    // return the shuffled array
+    return shuffled
+  }
+  
+  /**
    * Override the `create()` method for decks
    * 
    * Calls to the `create()` method only specify the number of packs of 52 cards
