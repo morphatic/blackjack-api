@@ -45,6 +45,14 @@ module.exports = function (app) {
       type: Boolean,
       default: false,
     },
+    surrendered: {
+      type: Boolean,
+      default: false,
+    },
+    payout: {
+      type: Number,
+      default: 0,
+    },
   }, {
     timestamps: true,
   })

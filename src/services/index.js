@@ -4,6 +4,7 @@ const hands = require('./hands/hands.service.js')
 const cards = require('./cards/cards.service.js')
 const decks = require('./decks/decks.service.js')
 const games = require('./games/games.service.js')
+const game = require('./game/game.service.js')
 const tables = require('./tables/tables.service.js')
 // eslint-disable-next-line no-unused-vars
 module.exports = function (app) {
@@ -13,5 +14,6 @@ module.exports = function (app) {
   app.configure(cards)
   app.configure(decks)
   app.configure(games)
+  app.configure(game)
   app.configure(tables)
 }

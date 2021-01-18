@@ -9,7 +9,7 @@ exports.Players = class Players extends Service {
     // check to see if it's a payout
     if (data.payout) {
       // get the user's record from the database
-      const player = super.get(id)
+      const player = await super.get(id)
       // update their amount of chips
       data.chips = player.chips + data.payout
       // remove the payout field from the data

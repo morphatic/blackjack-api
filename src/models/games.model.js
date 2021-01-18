@@ -20,6 +20,10 @@ module.exports = function (app) {
       type: Schema.Types.ObjectId,
       ref: 'tables',
     },
+    deck: {
+      type: Schema.Types.ObjectId,
+      ref: 'decks',
+    },
     currentHand: {
       type: Number,
       default: 0,
@@ -97,6 +101,10 @@ module.exports = function (app) {
         type: Boolean,
         default: true,
       },
+    },
+    state: {
+      type: String,
+      default: 'notStarted',
     },
   }, {
     timestamps: true,

@@ -2,16 +2,15 @@ const { GeneralError } = require('@feathersjs/errors')
 const { Service } = require('feathers-mongoose')
 
 exports.Cards = class Cards extends Service {
-  /**
-   * Seed the database with 8 packs of cards
-   */
-  async setup (app) {
+
+
+  async init () {
     // initialize variable for the number of missing cards
     let missing = 0
 
     try {
       // figure out how many more cards need to be created (if any)
-      missing = (8 * 52) - (await app.service('cards').find({ query: { $limit: 0 } })).total
+      missing = (8 * 52) - (await this.app.service('cards').find({ query: { $limit: 0 } })).total
     } catch (error) {
       throw new GeneralError('Could not retrieve the number of cards in the database!', error)
     }
@@ -35,11 +34,27 @@ exports.Cards = class Cards extends Service {
 
       try {
         // create card objects in the database
-        await app.service('cards').create(cards)
+        await this.app.service('cards').create(cards)
       } catch (error) {
         throw new GeneralError('Could NOT create cards in the database!', error)
       }
       // done!
+    }
+  }
+  
+  /**
+   * Seed the database with 8 packs of cards
+   */
+  async setup (app) {
+    this.app = app
+    await this.init()
+  }
+
+  async create (data, params) {
+    if (data.init) {
+      await this.init()
+    } else {
+      return super.create(data, params)
     }
   }
 }
