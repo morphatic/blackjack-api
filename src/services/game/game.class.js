@@ -53,7 +53,7 @@ const Game = {
       const deal = [...Array(bets.length + 1)].map((_, i) => [...cards.splice(0, 1), ...cards.splice(bets.length - i, 1)])
       
       // create a hand for each bet
-      let hands = await Promise.all(bets.map(async (bet, i) => await this.app.service('hands').create({ player, bet, cards: deal[i] })))
+      let hands = await Promise.all(bets.map(async (bet, i) => await this.app.service('hands').create({ player, bet, cards: deal[i], seat: i })))
 
       // create a new game
       const game = await this.app.service('games').create({
@@ -62,6 +62,7 @@ const Game = {
         hands: hands.map(h => h._id),
         rules: isEmpty(rules) ? player.preferences.rules : rules,
         dealerCards: deal[bets.length],
+        seats: bets.length,
         state: 'started',
       })
 
@@ -193,8 +194,17 @@ const Game = {
       // get the game
       const game = await this.app.service('games').get(gameId)
 
-      const next = game.currentHand + 1
+      // get the index of the next hand (even though it might not exist)
+      const current = game.currentHand
+      const next = current + 1
 
+      // if there is a next hand, and the next hand is at a different seat than the current one
+      if (game.hands[next] && game.hands[next].seat !== game.hands[current].seat) {
+        // then increment the seat
+        game.currentSeat += 1
+      }
+
+      // if "next" would push us past the number of hands
       if (next >= game.hands.length) {
         return this.completeDealersHand(gameId)
       } else {
@@ -202,7 +212,7 @@ const Game = {
         game.state = 'stood'
       }
 
-      await this.app.service('games').patch(gameId, { currentHand: game.currentHand })
+      await this.app.service('games').patch(gameId, { currentHand: game.currentHand, currentSeat: game.currentSeat })
       return game
     } catch (error) {
       console.log(error)
@@ -229,6 +239,7 @@ const Game = {
       // get the soft17 rule
       const dealerStandsOnSoft17 = game.rules.dealerStandsOnSoft17
 
+      // while the dealer must still draw cards...
       while (!this.isDone(hand, dealerStandsOnSoft17)) {
         // get a card and add it to the list of cards in play then update the deck
         const inPlay = deck.cards.pop()
@@ -237,7 +248,7 @@ const Game = {
         const card = await this.app.service('cards').get(inPlay)
         card.isFaceUp = true
         
-        // add it to the hand
+        // add it to the dealer's hand
         hand = [...hand, card]
       }
       

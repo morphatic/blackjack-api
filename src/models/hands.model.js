@@ -53,6 +53,10 @@ module.exports = function (app) {
       type: Number,
       default: 0,
     },
+    seat: {
+      type: Number,
+      default: 0,
+    },
   }, {
     timestamps: true,
   })
