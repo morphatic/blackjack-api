@@ -28,6 +28,10 @@ module.exports = function (app) {
       type: Number,
       default: 0,
     },
+    currentSeat: {
+      type: Number,
+      default: 0,
+    },
     rules: {
       seats: {
         type: Number,
@@ -101,6 +105,10 @@ module.exports = function (app) {
         type: Boolean,
         default: true,
       },
+    },
+    seats: {
+      type: Number,
+      default: 0,
     },
     state: {
       type: String,
